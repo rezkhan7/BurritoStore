@@ -1,1 +1,1 @@
-# BurritoStore
+# Burrito Store
