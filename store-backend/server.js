@@ -8,9 +8,16 @@ const PORT = 3001
 
 app.use(bodyParser.json())
 
-app.get('/', (req, res) => { // Here for testing purposes
-    res.json({ message: 'Hello, World!' });
-});
+// Test Route
+app.get('/', async (req, res) => {
+    try {
+      await sequelize.authenticate();
+      res.json({ message: 'Database connection successful!' });
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
 
 app.get('/api/burrito', async (req, res) => {
     try {
@@ -23,6 +30,11 @@ app.get('/api/burrito', async (req, res) => {
   });
 
 
-app.listen(PORT, ()=>{
-    console.log(`Server is running on http://localhost:${PORT}`)
-})
+  app.listen(PORT, async () => {
+    try {
+      await sequelize.sync(); // Sync the models with the database
+      console.log(`Server is running on http://localhost:${PORT}`);
+    } catch (error) {
+      console.error('Error syncing database models:', error);
+    }
+  });
