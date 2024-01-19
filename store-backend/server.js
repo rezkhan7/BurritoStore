@@ -32,22 +32,47 @@ app.get('/api/burrito', async (req, res) => {
     }
   });
 
-app.post('/api/orders', async (req, res) => {
-    try {
-      const { items } = req.body; 
-      const order = await Order.create({ total_cost: 0 }); 
-  
-      for (const item of items) {
-        const { burrito_id, quantity } = item;
-        await OrderItem.create({ order_id: order.id, burrito_id, quantity });
-      }
-  
-      res.json(order);
-    } catch (error) {
+app.post('/api/orders', async (req, res) =>{
+    try{
+        const { items } = req.body;
+
+        let totalCost = 0;
+        const orderItems = [];
+
+        for(const item of items){
+            const { burrito_id, quantity } = item;
+
+            if (quantity < 0) {
+                return res.status(400).json({ error: 'Quantity cannot be negative' });
+            }
+
+            const burrito = await Burrito.findByPk(burrito_id);
+
+            if(!burrito){
+                return res.status(404).json({ error: `Burrito with id ${burrito_id} not found` });
+            }
+
+            const itemCost = (burrito.price * quantity).toFixed(2);
+            totalCost += parseFloat(itemCost);
+
+            //Adds orderItem to an array
+            orderItems.push({ burrito_id, quantity, itemCost });
+        }
+        
+        totalCost = totalCost.toFixed(2);
+        const order = await Order.create({total_cost: totalCost});
+
+        for(const item of orderItems){
+            await OrderItem.create({ order_id: order.id, ...item});
+        }
+        res.json(order);
+    }catch (error) {
       console.error('Error creating order:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
-  });
+});
+
+  
   
 app.get('/api/orders/:id', async (req, res) => {
     try {
@@ -60,7 +85,7 @@ app.get('/api/orders/:id', async (req, res) => {
     }
   });
 
-/*
+
   //Endpoint for DELETE
   app.delete('/api/orders/:id', async (req, res) => {
     try {
@@ -81,7 +106,7 @@ app.get('/api/orders/:id', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-*/
+
 
   app.listen(PORT, async () => {
     try {
