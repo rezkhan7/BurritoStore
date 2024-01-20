@@ -108,11 +108,9 @@ app.get('/api/orders/:id', async (req, res) => {
   });
 
 
-  app.listen(PORT, async () => {
-    try {
-      await sequelize.sync(); // Sync the models with the database
-      console.log(`Server is running on http://localhost:${PORT}`);
-    } catch (error) {
-      console.error('Error syncing database models:', error);
-    }
+module.exports = app;
+
+
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
   });
