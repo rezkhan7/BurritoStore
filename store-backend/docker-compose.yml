@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: BurritoShop
     ports:
-      - "5432:5432"
+      - "5432:5434"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
