@@ -1,0 +1,29 @@
+version: '3'
+services:
+  # PostgreSQL database service
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: BurritoShop
+    ports:
+      - "5432:5434"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # Node.js application service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: admin
+      DB_NAME: BurritoShop
+    ports:
+      - "3001:3001"
