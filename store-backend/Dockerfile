@@ -10,6 +10,7 @@ COPY package*.json ./
 # intall dependencies
 RUN npm install
 RUN npm install sequelize pg pg-hstore
+RUN npm install --save-dev jest supertest
 
 # Copy everything into working directory
 COPY . .
