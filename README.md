@@ -1,86 +1,65 @@
-# Burrito Store
+# BurritoStore Backend
 
-Command to run backend: node server.js
+This is the backend for BurritoStore, a simple application for managing burritos and orders.
 
-## PostgreSQL commands
+## Table of Contents
 
-### Defining schemas: 
+- [Getting Started](#getting-started)
+- [Testing](#testing)
 
-```
-CREATE TABLE burrito (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR,
-  size VARCHAR,
-  price NUMERIC
-);
+## Getting Started
 
-```
-
-```
-CREATE TABLE orders (
-  id SERIAL PRIMARY KEY,
-  total_cost NUMERIC
-);
+These instructions will help you set up and run the BurritoStore backend on your local machine.
+1. Ensure you have docker set up in your local machine
+2. Clone repo
+3. Go inside the store-backend directory (cd store-backend)
+4. Run:
+   ```
+    docker-compose up --build
+   ```
+5. Wait for docker to do its magic, and Keep an eye on Jest Test Results as the Dockerfile automatically does npm test as soon Postgres and Express environments are built.
 
 
-```
+## Testing
 
-```
-CREATE TABLE order_item (
-  id SERIAL PRIMARY KEY,
-  order_id INTEGER REFERENCES orders(id),
-  burrito_id INTEGER REFERENCES burrito(id),
-  quantity INTEGER
-);
+1. IF NEEDED go to Dockerfile and change last line from CMD ["npm", "test"] to CMD ["npm", "start"]
+2. Use Postman to test API ednpoints
 
 
-```
+In Postman, you can follow these steps to send a POST request to your /api/orders endpoint:
 
-### Adding Burritos
+  1. Open Postman.
 
-```
--- Insert statements for burritos
-INSERT INTO burrito (name, size, price) VALUES ('Chicken Burrito', 'Mini', 3.00);
-INSERT INTO burrito (name, size, price) VALUES ('Chicken Burrito', 'Regular', 4.00);
-INSERT INTO burrito (name, size, price) VALUES ('Chicken Burrito', 'Large', 5.00);
+  2. Set the request type to "POST" using the dropdown next to the URL input.
 
-INSERT INTO burrito (name, size, price) VALUES ('Beef Burrito', 'Mini', 3.50);
-INSERT INTO burrito (name, size, price) VALUES ('Beef Burrito', 'Regular', 4.75);
-INSERT INTO burrito (name, size, price) VALUES ('Beef Burrito', 'Large', 6.00);
+  3. Enter the URL: http://localhost:3001/api/orders
 
-INSERT INTO burrito (name, size, price) VALUES ('Mexican Burrito', 'Mini', 2.50);
-INSERT INTO burrito (name, size, price) VALUES ('Mexican Burrito', 'Regular', 3.75);
-INSERT INTO burrito (name, size, price) VALUES ('Mexican Burrito', 'Large', 4.50);
+  4. Go to the "Headers" tab and add a header:
+        Key: Content-Type
+        Value: application/json
+     Remember to check the box next to key
 
-INSERT INTO burrito (name, size, price) VALUES ('Bean and Cheese Burrito', 'Mini', 2.50);
-INSERT INTO burrito (name, size, price) VALUES ('Bean and Cheese Burrito', 'Regular', 3.75);
-INSERT INTO burrito (name, size, price) VALUES ('Bean and Cheese Burrito', 'Large', 4.50);
+  6. Switch to the "Body" tab, select the "raw" option, and choose JSON (application/json) from the dropdown.
 
-INSERT INTO burrito (name, size, price) VALUES ('LA-Style Burrito', 'Mini', 2.50);
-INSERT INTO burrito (name, size, price) VALUES ('LA-Style Burrito', 'Regular', 3.75);
-INSERT INTO burrito (name, size, price) VALUES ('LA-Style Burrito', 'Large', 4.50);
+  7. In the body section, enter the JSON payload for your request. For example:
 
-INSERT INTO burrito (name, size, price) VALUES ('Breakfast Burrito', 'Mini', 2.75);
-INSERT INTO burrito (name, size, price) VALUES ('Breakfast Burrito', 'Regular', 3.50);
-INSERT INTO burrito (name, size, price) VALUES ('Breakfast Burrito', 'Large', 4.25);
+  ```
+  {
+    "items": [
+      {
+        "burrito_id": 1,
+        "quantity": 2
+      },
+      {
+        "burrito_id": 2,
+        "quantity": 1
+      }
+    ]
+}
 
-INSERT INTO burrito (name, size, price) VALUES ('Breakfast Burrito', 'Mini', 2.75);
-INSERT INTO burrito (name, size, price) VALUES ('Breakfast Burrito', 'Regular', 3.50);
-INSERT INTO burrito (name, size, price) VALUES ('Breakfast Burrito', 'Large', 4.25);
+  ```
+8. Do a get request on postman for http://localhost:3001/api/orders/<ID OF ORDER> for more details
 
-INSERT INTO burrito (name, size, price) VALUES ('Dorado Style', 'Mini', 3.25);
-INSERT INTO burrito (name, size, price) VALUES ('Dorado Style', 'Regular', 4.00);
-INSERT INTO burrito (name, size, price) VALUES ('Dorado Style', 'Large', 4.75);
-
-INSERT INTO burrito (name, size, price) VALUES ('San Francisco Style', 'Mini', 4.00);
-INSERT INTO burrito (name, size, price) VALUES ('San Francisco Style', 'Regular', 5.00);
-INSERT INTO burrito (name, size, price) VALUES ('San Francisco Style', 'Large', 6.00);
-
-INSERT INTO burrito (name, size, price) VALUES ('Bacon-Wrapped Burrito', 'Mini', 3.50);
-INSERT INTO burrito (name, size, price) VALUES ('Bacon-Wrapped Burrito', 'Regular', 4.25);
-INSERT INTO burrito (name, size, price) VALUES ('Bacon-Wrapped Burrito', 'Large', 5.00);
-
-
-```
+9. DO A GET REQUEST ON POSTMAN FOR http://localhost:3001/api/burrito FOR A LIST OF BURRITOS, THEIR CORRESPONDING IDs AND THEIR COST.
 
 
